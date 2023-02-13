@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "cypress": "^12.5.1",
+    "cypress-wait-until": "^1.7.2"
+  },
+  "dependencies": {
+    "cypress-file-upload": "^5.0.8"
+  }
+}
