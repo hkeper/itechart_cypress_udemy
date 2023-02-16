@@ -75,22 +75,29 @@ describe('Test Framework', () => {
         cy.waitUntil(() => {
             cy.get("button[class$='-SyncButton']").click()
 
-            cy.get("div[class^='ns-view-messages-item-wrap ']").each((el, index, list) => {
 
-                let theme = el.find("span[class$='mail-MessageSnippet-Item_subject'] span[title]").text()
-                cy.log("MAIL THEME" + theme)
-                let mailDataID = el.prop("data-id") + ''
-                cy.log("MAIL DATA ID" + mailDataID)
-                let dataIDNum = parseInt(dataID.split('t'))
-                let maildataIDNum = parseInt(mailDataID.split('t'))
-                cy.log("MAIL SPLIT DATA ID" + dataIDNum)
+            cy.get("body").then($body => {
+                if ($body.find("div[class^='ns-view-messages-item-wrap ']").length > 0) {
+                    cy.get("div[class^='ns-view-messages-item-wrap ']").each((el, index, list) => {
 
-                if (theme.includes(this.data.mail_theme)) {
-                    mailIndex = index
-                    return true
-                } else {
-                    return cy.get("button[class$='-SyncButton']").click().then(() => false)
-                }
+                    let theme = el.find("span[class$='mail-MessageSnippet-Item_subject'] span[title]").text()
+                    cy.log("MAIL THEME" + theme)
+                    var mailDataID = el.attr("data-id") + ''
+                    
+                    cy.log("MAIL DATA ID " + mailDataID)
+                    //let dataIDNum = parseInt(dataID.split('t')[1].trim)
+                    let maildataIDNum = parseInt(mailDataID.split('t')[1].trim())
+                    cy.log("MAIL SPLIT DATA ID " + maildataIDNum)
+
+                    if (theme.includes(this.data.mail_theme)) {
+                        
+                        mailIndex = index
+                        return cy.get("button[class$='-SyncButton']").click().then(() => true)
+                    } else {
+                        return cy.get("button[class$='-SyncButton']").click().then(() => false)
+                    }
+                })
+              }
             })
         })
 
