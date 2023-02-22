@@ -48,12 +48,6 @@ describe('Test mail recieve with mailfence', () => {
         cy.get("[id*=upload_id]", { timeout: 60000 }).should('not.exist')
         cy.get('#mailSend').click()
 
-        // Write letter
-        // cy.get('.Layout-m__root--fQu5R > .Button2_type_link').click()
-        // cy.get("#compose-field-1").click()
-        // cy.get("div.ContactsSuggestItemDesktop-Name").eq(0).click()
-        // cy.get('#compose-field-subject-4').type(this.data.mail_theme)
-
         // cy.get("input[class^='WithUpload-FileInput']").attachFile("file.pdf")
         // cy.get("div[class^='LoadingProgress']", { timeout: 60000 }).should('not.exist')
         // cy.get("div[class*='-SendButton'] button").click()
