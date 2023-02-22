@@ -17,6 +17,9 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 
 describe('Test mail recieve with mailfence', () => {
 
+    const homePage = new HomePage()
+    const loginPage = new LoginPage()
+
     before(() => {
         cy.fixture('test_data').then(function (fixture_data) {
             this.data = fixture_data
@@ -26,16 +29,24 @@ describe('Test mail recieve with mailfence', () => {
     it("Test mail recieve and move to trash", function () {
         // Cypress.config("defaultCommandTimeout", 10000)
 
+        const fileName = 'cypress/fixture/read-write/attachment.txt'
+
         cy.viewport(1280, 720)
         cy.visit(Cypress.env("url"))
 
-        const homePage = new HomePage()
-        const loginPage = new LoginPage()
-
         homePage.getSignInButton().click()
-        loginPage.getUserIDInput().type(Cypress.env("user_name"))
-        loginPage.getPasswordInput().type(Cypress.env("user_password"))
-        loginPage.getSubmitButton().click()
+        loginPage.login(Cypress.env("user_id"), Cypress.env("user_password"))
+        
+        cy.writeFile('cypress/fixtures/read-write/attachment.txt', "Test file for testing email attachment")
+
+        cy.get('#nav-mail').click()
+        cy.get('#mailNewBtn').click()
+        cy.get('div#mailTo input').type(this.data.email)
+        cy.get('#mailSubject').type(this.data.mail_theme)
+        cy.get('.GCSDBRWBKSB > :nth-child(2)').click()
+        cy.get('#new_email_attach input').attachFile('read-write/attachment.txt')
+        cy.get("[id*=upload_id]", { timeout: 60000 }).should('not.exist')
+        cy.get('#mailSend').click()
 
         // Write letter
         // cy.get('.Layout-m__root--fQu5R > .Button2_type_link').click()

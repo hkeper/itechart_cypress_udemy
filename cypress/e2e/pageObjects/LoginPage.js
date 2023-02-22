@@ -9,6 +9,13 @@ class LoginPage
     getSubmitButton(){
         return cy.get("[type='submit']")
     }
+
+    login(userId, password) {
+        this.getUserIDInput().type(userId)
+        this.getPasswordInput().type(password)
+        this.getSubmitButton().click()
+    }
+
 }
 
 export default LoginPage
