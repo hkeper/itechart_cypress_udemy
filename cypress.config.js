@@ -3,11 +3,12 @@ const { defineConfig } = require("cypress");
 module.exports = defineConfig({
   projectId: "5v8tef",
   chromeWebSecurity: false,
-  defaultCommandTimeout: 20000,
-  pageLoadTimeout: 30000,
+  defaultCommandTimeout: 180000,
+  pageLoadTimeout: 180000,
   reporter: "mochawesome",
   env: {
     url: "https://mailfence.com/",
+    shop_url: "https://rahulshettyacademy.com/angularpractice"
 
   },
   retries: {
@@ -17,7 +18,7 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       return require('./cypress/plugins/index.js')(on, config)
     },
-    specPattern: "cypress/e2e/yandexTests/*.js",
+    specPattern: "cypress/e2e/*Tests/*.js",
     hideXHRInCommandLog: true
   },
 });

@@ -5,9 +5,10 @@ import 'cypress-wait-until'
 
 import HomePage from '../pageObjects/HomePage';
 import LoginPage from '../pageObjects/LoginPage';
+import MailPage from '../pageObjects/MailPage';
 
-let dataID = '';
-let mailIndex;
+const random = () => Cypress._.random(0, 1e6)
+const mail_id = random()
 
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
@@ -17,9 +18,6 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 
 describe('Test mail recieve with mailfence', () => {
 
-    const homePage = new HomePage()
-    const loginPage = new LoginPage()
-
     before(() => {
         cy.fixture('test_data').then(function (fixture_data) {
             this.data = fixture_data
@@ -28,29 +26,42 @@ describe('Test mail recieve with mailfence', () => {
 
     it("Test mail recieve and move to trash", function () {
         // Cypress.config("defaultCommandTimeout", 10000)
+        const homePage = new HomePage()
+        const loginPage = new LoginPage()
+        const mailPage = new MailPage()
 
-        const fileName = 'cypress/fixture/read-write/attachment.txt'
+        const fileName = 'read-write/attachment.txt'
 
         cy.viewport(1280, 720)
         cy.visit(Cypress.env("url"))
 
         homePage.getSignInButton().click()
         loginPage.login(Cypress.env("user_id"), Cypress.env("user_password"))
-        
+
         cy.writeFile('cypress/fixtures/read-write/attachment.txt', "Test file for testing email attachment")
+
+        cy.get('div[class~="toolbar"] div[class*="Refresh"]').click()
+        cy.get('tbody:not([style*="display: none"]) div.loadingIcon').should('not.exist')
 
         cy.get('#nav-mail').click()
         cy.get('#mailNewBtn').click()
         cy.get('div#mailTo input').type(this.data.email)
-        cy.get('#mailSubject').type(this.data.mail_theme)
+        cy.get('#mailSubject').type(mail_id)
         cy.get('.GCSDBRWBKSB > :nth-child(2)').click()
-        cy.get('#new_email_attach input').attachFile('read-write/attachment.txt')
+        cy.get('#new_email_attach input').attachFile(fileName)
         cy.get("[id*=upload_id]", { timeout: 60000 }).should('not.exist')
         cy.get('#mailSend').click()
+        cy.get('tbody:not([style*="display: none"]) div.loadingIcon').should('not.exist')
 
-        // cy.get("input[class^='WithUpload-FileInput']").attachFile("file.pdf")
-        // cy.get("div[class^='LoadingProgress']", { timeout: 60000 }).should('not.exist')
-        // cy.get("div[class*='-SendButton'] button").click()
+        cy.reload()
+
+        mailPage.waitNewEmailWithTheme(mail_id)
+
+        
+
+        //Open email
+        //cy.get('tr[class*="trow"]:first-of-type').click()
+
 
         // cy.get("div[class='ComposeDoneScreen-Actions']").click()
 
@@ -86,12 +97,26 @@ describe('Test mail recieve with mailfence', () => {
         //             if (theme.includes(this.data.mail_theme)) {
 
         //                 mailIndex = index
-                        
+
         //             } 
         //         }).then(() => {})
         //       } 
         //     })
         // })
+
+    })
+
+
+
+    it.skip("Test2", () => {
+        cy.visit(Cypress.env("url"))
+
+
+        const homePage = new HomePage()
+        const loginPage = new LoginPage()
+
+        homePage.getSignInButton().click()
+        loginPage.login(Cypress.env("user_id"), Cypress.env("user_password"))
 
     })
 

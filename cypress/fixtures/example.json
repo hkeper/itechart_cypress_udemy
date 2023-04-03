@@ -1,6 +1,4 @@
 {
-  "mail_theme": "Test mail",
-  "email": "test.cypress@mailfence.com",
   "name": "Bob",
   "gender": "Male",
   "productName": ["Blackberry", "Nokia Edge"]
